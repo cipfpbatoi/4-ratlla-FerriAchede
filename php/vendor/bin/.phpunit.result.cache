@@ -1,0 +1,1 @@
+{"version":1,"defects":{"GameTest::testDetectsWinner":7,"GameTest::testDetectsDraw":7,"GameTest::testColumnFullException":8},"times":{"GameTest::testInitialBoardSetup":0.002,"GameTest::testMovementIsAppliedCorrectly":0,"GameTest::testDetectsWinner":0.004,"GameTest::testDetectsDraw":0,"GameTest::testGameStateIsSaved":0,"GameTest::testColumnFullException":0}}
