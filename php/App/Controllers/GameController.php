@@ -18,7 +18,7 @@ class GameController
      */
     private Game $game;
 
-    // private GameLogger $logger; // Se puede descomentar si se usa el logger
+    private GameLogger $logger; // Se puede descomentar si se usa el logger
 
     /**
      * GameController constructor.
@@ -29,7 +29,7 @@ class GameController
      */
     public function __construct($request = null)
     {
-        // $this->logger = new GameLogger(); // Se puede descomentar si se usa el logger
+        $this->logger = new GameLogger(); // Se puede descomentar si se usa el logger
         if (isset($request['nombre1'], $request['color1']) && isset($request['nombre2'], $request['color2'])) {
             $_SESSION['jugador1'] = new Player(htmlspecialchars($request['nombre1']), htmlspecialchars($request['color1']));
             $_SESSION['jugador2'] = new Player(htmlspecialchars($request['nombre2']), htmlspecialchars($request['color2']), true);
@@ -37,10 +37,10 @@ class GameController
             $this->game = new Game($_SESSION['jugador1'], $_SESSION['jugador2']);
             $this->game->save();
 
-            // $this->logger->logMovement("Nueva partida iniciada entre {$_SESSION['jugador1']->getName()} y {$_SESSION['jugador2']->getName()}.");
+            $this->logger->logMovement("Nueva partida iniciada entre {$_SESSION['jugador1']->getName()} y {$_SESSION['jugador2']->getName()}.");
         } else {
             $this->game = Game::restore();
-            // $this->logger->logMovement("Restaurando el juego.");
+            $this->logger->logMovement("Restaurando el juego.");
         }
         $this->play($request);
         // dd($this->game);
@@ -66,7 +66,7 @@ class GameController
 
         if (isset($request['reset'])) {
             $this->game->reset();
-            // $this->logger->logMovement("El juego se ha reiniciado.");
+            $this->logger->logMovement("El juego se ha reiniciado.");
         }
 
         if (isset($request['exit'])) {
@@ -80,7 +80,7 @@ class GameController
                 $columna = (int)$request['columna'];
                 $lastMoveCoords = $board->setMovementOnBoard($columna, $this->game->getNextPlayer());
 
-                // $this->logger->logMovement("El jugador {$players[$this->game->getNextPlayer()]->getName()} ha realizado un movimiento en la columna $columna.");
+                $this->logger->logMovement("El jugador {$players[$this->game->getNextPlayer()]->getName()} ha realizado un movimiento en la columna $columna.");
 
                 if (!empty($lastMoveCoords) && $board->checkWin($lastMoveCoords)) {
                     $winningPlayer = $players[$this->game->getNextPlayer()];
@@ -88,21 +88,21 @@ class GameController
                     $scores[$this->game->getNextPlayer()]++;
                     $this->game->setScores($scores);
 
-                    // $this->logger->logMovement("El jugador {$winningPlayer->getName()} ha ganado la partida.");
+                    $this->logger->logMovement("El jugador {$winningPlayer->getName()} ha ganado la partida.");
                 } else {
                     $this->game->setNextPlayer($this->game->getNextPlayer() === 1 ? 2 : 1);
                     $this->game->playAutomatic();
                     $this->game->setNextPlayer($this->game->getNextPlayer() === 1 ? 2 : 1);
-                    // $this->logger->logMovement("El jugador automático ha realizado un movimiento.");
+                    $this->logger->logMovement("El jugador automático ha realizado un movimiento.");
                 }
                 
             }
         } catch (\Joc4enRatlla\Exceptions\ColumnFullException $e) {
             echo $e->getMessage();
-            // $this->logger->logError("Error: {$e->getMessage()}");
+            $this->logger->logError("Error: {$e->getMessage()}");
         } catch (\Joc4enRatlla\Exceptions\TableFullException $e) {
             echo $e->getMessage();
-            // $this->logger->logError("Error: {$e->getMessage()}");
+            $this->logger->logError("Error: {$e->getMessage()}");
         }
 
         $this->game->save();

@@ -26,8 +26,8 @@ class GameLogger
     public function __construct()
     {
         $this->logger = new Logger('game_logger');
-        $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/game.log', Logger::INFO));
-        $this->logger->pushHandler(new StreamHandler(__DIR__ . '/../../logs/error.log', Logger::ERROR));
+        $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '/../logs/game.log', Logger::INFO));
+        $this->logger->pushHandler(new StreamHandler($_SERVER['DOCUMENT_ROOT'] . '/../logs/error.log', Logger::ERROR));
     }
 
     /**
